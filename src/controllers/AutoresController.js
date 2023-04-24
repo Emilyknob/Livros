@@ -36,7 +36,7 @@ class AutorController {
 		try {
 			let autor = new autores(req.body);
 			
-			const result = await autor.save;
+			const result = await autor.save();
 
 			if (!result)
 				throw new Error('Erro ao cadastrar autor');
