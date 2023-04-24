@@ -1,16 +1,15 @@
-
 import livros from "./livrosRoutes.js";
 import autores from "./autoresRoutes.js";
 
 const routes = (app) => {
-    app.route("/").get((req, res) => {
-        res.status(200).send({titulo: "Curso de Node"})
-    });
+	app.route("/").get((req, res) => {
+		res.status(200).send({titulo: "Curso de Node"});
+	});
 
-    app.use(
-        livros,
-        autores
-    );
-}
+	app.use(
+		livros,
+		autores
+	);
+};
 
 export default routes;
