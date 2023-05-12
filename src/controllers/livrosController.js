@@ -2,86 +2,89 @@ import livros from "../models/Livro.js";
 
 class LivroController {
 
-	static listarLivros = async (req, res) => {
+	static listarLivros = async (req, res, next) => {
 		try {
 			const result = await livros.find()
 				.populate("autor")
 				.exec();
 			res.json(result);
 		} catch (err) {
-			res.status(500).send({
-				error: err.message
-			})
+			next(err);
 		}
 	};
 
-	static listarLivroPorId = async (req, res) => {
+	static listarLivroPorId = async (req, res, next) => {
 		try {
 			const id = req.params.id;
 			const result = await livros.findById(id)
 				.populate("autor", "nome")
 				.exec();
-			
-			res.send(result);
+
+
+			if (result !== null) {
+				res.send(result);
+			} else {
+				next(new NaoEncontrado("ID do autor não localizado!"));
+			}
 
 		} catch (err) {
-			res.status(500).send({
-				error: err.message
-			})
+			next(err);
 		}
 	};
 
-	static cadastrarLivro = async (req, res) => {
+	static cadastrarLivro = async (req, res, next) => {
 		try {
 			let livro = new livros(req.body);
 			const result = await livro.save();
 
 			res.send(result.toJSON());
-			
+
 		} catch (err) {
-			res.status(500).send({
-				error: err.message
-			})
+			next(err);
 		}
 	};
 
-	static atualizarLivro = async (req, res) => {
+	static atualizarLivro = async (req, res, next) => {
 		try {
 			const id = req.params.id;
 			const atualizacao = req.body;
 			const result = await livros.findByIdAndUpdate(id, atualizacao);
-			
-			res.send(result);
+
+			if (result !== null) {
+				res.send(result);
+			} else {
+				next(new NaoEncontrado("ID do autor não localizado!"));
+			}
+
 		} catch (err) {
-			res.status(500).send({
-				error: err.message
-			})
+			next(err);
 		}
 	};
 
-	static excluirLivro = async (req, res) => {
+	static excluirLivro = async (req, res, next) => {
 		try {
 			const id = req.params.id;
 			const result = await livros.findByIdAndDelete(id);
 
-			res.send(result);
+			if (result !== null) {
+				res.send(result);
+			} else {
+				next(new NaoEncontrado("ID do autor não localizado!"));
+			}
+
 		} catch (err) {
-			res.status(500).send({
-				error: err.message
-			})
+			next(err);
 		}
 	};
 
-	static listarLivroPorEditora = async (req, res) => {
+	static listarLivroPorEditora = async (req, res, next) => {
 		try {
 			const editora = req.query.editora;
 			const result = await livros.find({ "editora": editora });
 
 			res.send(result);
 		} catch (err) {
-			res.status(500).send({
-				error: err.message
-			})
+			next(err);
 		}
 	};
 }
